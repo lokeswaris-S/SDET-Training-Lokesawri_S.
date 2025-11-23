@@ -1,0 +1,26 @@
+import java.util.*;
+
+public class HashSetVsArrayList {
+
+    public static void main(String[] args) {
+
+        ArrayList<Integer> list = new ArrayList<>();
+        HashSet<Integer> set = new HashSet<>();
+
+        for (int i = 0; i < 10000; i++) {
+            list.add(i);
+            set.add(i);
+        }
+
+        long start1 = System.nanoTime();
+        list.contains(9000);
+        long end1 = System.nanoTime();
+
+        long start2 = System.nanoTime();
+        set.contains(9000);
+        long end2 = System.nanoTime();
+
+        System.out.println("ArrayList Search Time: " + (end1 - start1));
+        System.out.println("HashSet Search Time: " + (end2 - start2));
+    }
+}
