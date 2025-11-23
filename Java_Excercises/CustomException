@@ -1,0 +1,78 @@
+import java.util.Scanner;
+
+// Custom exception: Invalid Data
+class WrongDataException extends Exception {
+    public WrongDataException(String msg) {
+        super(msg);
+    }
+}
+
+// Custom exception: Missing Data
+class DataNotFoundException extends Exception {
+    public DataNotFoundException(String msg) {
+        super(msg);
+    }
+}
+
+// Custom exception: System Error
+class SystemFailureException extends Exception {
+    public SystemFailureException(String msg) {
+        super(msg);
+    }
+}
+
+public class CustomExceptionDemo {
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+        String choice;
+
+        System.out.println("Type something (stop to exit):");
+
+        while (true) {
+            choice = scanner.nextLine();
+
+            if (choice.equalsIgnoreCase("stop")) {
+                System.out.println("Program stopped.");
+                break;
+            }
+
+            try {
+                checkInput(choice);
+            } 
+            catch (WrongDataException e) {
+                System.out.println("Wrong Data Error: " + e.getMessage());
+            } 
+            catch (DataNotFoundException e) {
+                System.out.println("Data Missing Error: " + e.getMessage());
+            } 
+            catch (SystemFailureException e) {
+                System.out.println("System Error: " + e.getMessage());
+            } 
+            catch (Exception e) {
+                System.out.println("Unknown Error: " + e.getMessage());
+            }
+        }
+
+        scanner.close();
+    }
+
+    public static void checkInput(String input) 
+            throws WrongDataException, DataNotFoundException, SystemFailureException {
+
+        if (input.length() < 3) {
+            throw new WrongDataException("Input must contain at least 3 characters.");
+        }
+
+        if (input.equalsIgnoreCase("missing")) {
+            throw new DataNotFoundException("Requested data is not available.");
+        }
+
+        if (input.equalsIgnoreCase("error")) {
+            throw new SystemFailureException("System crashed while processing.");
+        }
+
+        System.out.println("Valid Input: " + input);
+    }
+}
