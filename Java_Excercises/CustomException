@@ -1,78 +1,104 @@
-import java.util.Scanner;
 
-// Custom exception: Invalid Data
-class WrongDataException extends Exception {
-    public WrongDataException(String msg) {
-        super(msg);
+import java.util.HashMap;
+
+public class LibraryApp {
+
+    // ----------- Custom Exceptions -----------
+
+    static class InvalidInputException extends Exception {
+        public InvalidInputException(String message) {
+            super(message);
+        }
+
+        public InvalidInputException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
-}
 
-// Custom exception: Missing Data
-class DataNotFoundException extends Exception {
-    public DataNotFoundException(String msg) {
-        super(msg);
+    static class ResourceNotFoundException extends Exception {
+        public ResourceNotFoundException(String message) {
+            super(message);
+        }
+
+        public ResourceNotFoundException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
-}
 
-// Custom exception: System Error
-class SystemFailureException extends Exception {
-    public SystemFailureException(String msg) {
-        super(msg);
+    static class DatabaseConnectionException extends Exception {
+        public DatabaseConnectionException(String message) {
+            super(message);
+        }
+
+        public DatabaseConnectionException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
-}
 
-public class CustomExceptionDemo {
+    // ----------- Simple Library Database -----------
+
+    private static HashMap<Integer, String> books = new HashMap<>();
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
-        String choice;
+        // Adding some sample books
+        books.put(101, "Java Programming");
+        books.put(102, "Data Structures");
 
-        System.out.println("Type something (stop to exit):");
+        try {
+            // 1️⃣ Invalid Input Example
+            borrowBook(-10);
 
-        while (true) {
-            choice = scanner.nextLine();
+            // 2️⃣ Resource Not Found Example
+            findBook(999);
 
-            if (choice.equalsIgnoreCase("stop")) {
-                System.out.println("Program stopped.");
-                break;
-            }
+            // 3️⃣ Database Error Example
+            connectToDatabase(true);
 
-            try {
-                checkInput(choice);
-            } 
-            catch (WrongDataException e) {
-                System.out.println("Wrong Data Error: " + e.getMessage());
-            } 
-            catch (DataNotFoundException e) {
-                System.out.println("Data Missing Error: " + e.getMessage());
-            } 
-            catch (SystemFailureException e) {
-                System.out.println("System Error: " + e.getMessage());
-            } 
-            catch (Exception e) {
-                System.out.println("Unknown Error: " + e.getMessage());
-            }
         }
-
-        scanner.close();
+        catch (InvalidInputException e) {
+            System.out.println("InvalidInputException Caught: " + e.getMessage());
+        }
+        catch (ResourceNotFoundException e) {
+            System.out.println("ResourceNotFoundException Caught: " + e.getMessage());
+        }
+        catch (DatabaseConnectionException e) {
+            System.out.println("DatabaseConnectionException Caught: " + e.getMessage());
+        }
+        finally {
+            System.out.println("\nProgram execution completed.");
+        }
     }
 
-    public static void checkInput(String input) 
-            throws WrongDataException, DataNotFoundException, SystemFailureException {
+    // ----------- Methods Demonstrating Exceptions -----------
 
-        if (input.length() < 3) {
-            throw new WrongDataException("Input must contain at least 3 characters.");
+    // Invalid input example
+    public static void borrowBook(int bookId) throws InvalidInputException {
+        if (bookId <= 0) {
+            throw new InvalidInputException("Book ID cannot be zero or negative.");
         }
 
-        if (input.equalsIgnoreCase("missing")) {
-            throw new DataNotFoundException("Requested data is not available.");
+        System.out.println("Borrowing book with ID: " + bookId);
+    }
+
+    // Resource not found example
+    public static void findBook(int bookId) throws ResourceNotFoundException {
+        if (!books.containsKey(bookId)) {
+            throw new ResourceNotFoundException("Book with ID " + bookId + " not found.");
         }
 
-        if (input.equalsIgnoreCase("error")) {
-            throw new SystemFailureException("System crashed while processing.");
+        System.out.println("Book Found: " + books.get(bookId));
+    }
+
+    // Database connection example
+    public static void connectToDatabase(boolean simulateError) throws DatabaseConnectionException {
+        if (simulateError) {
+            throw new DatabaseConnectionException(
+                    "Unable to connect to database.",
+                    new RuntimeException("Connection timeout")
+            );
         }
 
-        System.out.println("Valid Input: " + input);
+        System.out.println("Database connected successfully.");
     }
 }
