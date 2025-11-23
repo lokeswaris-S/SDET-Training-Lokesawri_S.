@@ -1,0 +1,28 @@
+import java.util.*;
+
+public class HashMapVsList {
+
+    public static void main(String[] args) {
+
+        HashMap<Integer, String> map = new HashMap<>();
+        ArrayList<Integer> list = new ArrayList<>();
+
+        for (int i = 0; i < 10000; i++) {
+            map.put(i, "Value" + i);
+            list.add(i);
+        }
+
+        // HashMap Lookup
+        long start1 = System.nanoTime();
+        map.get(9000);
+        long end1 = System.nanoTime();
+
+        // List Lookup
+        long start2 = System.nanoTime();
+        list.contains(9000);
+        long end2 = System.nanoTime();
+
+        System.out.println("HashMap Lookup Time: " + (end1 - start1));
+        System.out.println("List Lookup Time: " + (end2 - start2));
+    }
+}
