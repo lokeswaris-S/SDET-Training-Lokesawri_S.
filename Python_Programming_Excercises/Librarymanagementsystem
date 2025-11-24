@@ -1,10 +1,10 @@
-# --- Book class ---
+# ---------------- Book Class ----------------
 class Book:
-    def __init__(self, title, author, ISBN):
+    def __init__(self, title, author, isbn):
         self._title = title
         self._author = author
-        self._ISBN = ISBN
-        self._available = True
+        self._isbn = isbn
+        self._availability = True
 
     def get_title(self):
         return self._title
@@ -12,20 +12,17 @@ class Book:
     def get_author(self):
         return self._author
 
-    def get_ISBN(self):
-        return self._ISBN
+    def get_isbn(self):
+        return self._isbn
 
     def is_available(self):
-        return self._available
+        return self._availability
 
-    def set_available(self, status):
-        self._available = status
-
-    def display_info(self):
-        print(f"Title: {self._title}, Author: {self._author}, ISBN: {self._ISBN}, Available: {self._available}")
+    def set_availability(self, status):
+        self._availability = status
 
 
-# --- Member class ---
+# ---------------- Member Class ----------------
 class Member:
     def __init__(self, name, member_id):
         self._name = name
@@ -38,30 +35,28 @@ class Member:
     def get_member_id(self):
         return self._member_id
 
-    def get_borrowed_books(self):
-        return self._borrowed_books
-
     def borrow_book(self, book):
         if book in self._borrowed_books:
-            print(f"{self._name} already borrowed '{book.get_title()}'")
+            print("You already borrowed this book")
             return
+
         if book.is_available():
             self._borrowed_books.append(book)
-            book.set_available(False)
+            book.set_availability(False)
             print(f"{self._name} borrowed '{book.get_title()}'")
         else:
-            print(f"Sorry, '{book.get_title()}' is not available")
+            raise Exception("Book is not available")
 
     def return_book(self, book):
         if book in self._borrowed_books:
             self._borrowed_books.remove(book)
-            book.set_available(True)
+            book.set_availability(True)
             print(f"{self._name} returned '{book.get_title()}'")
         else:
-            print(f"{self._name} did not borrow '{book.get_title()}'")
+            print("This book was not borrowed by you")
 
 
-# --- Library class ---
+# ---------------- Library Class ----------------
 class Library:
     def __init__(self):
         self.books = []
@@ -69,110 +64,86 @@ class Library:
 
     def add_book(self, book):
         self.books.append(book)
-        print(f"Book '{book.get_title()}' added")
-        book.display_info()
-
-    def remove_book(self, book):
-        if book in self.books:
-            self.books.remove(book)
-            print(f"Book '{book.get_title()}' removed")
-        else:
-            print("Book not found")
 
     def add_member(self, member):
         self.members.append(member)
-        print(f"Member '{member.get_name()}' added")
+
+    def search_book(self, keyword):
+        for book in self.books:
+            if keyword.lower() in book.get_title().lower() or keyword.lower() in book.get_author().lower():
+                return book
+        raise Exception("Book not found")
 
     def find_member(self, member_id):
         for member in self.members:
             if member.get_member_id() == member_id:
                 return member
-        print("Member not found")
-        return None
+        raise Exception("Member not found")
 
-    def search_book(self, keyword):
-        for book in self.books:
-            if keyword.lower() in book.get_title().lower() or keyword.lower() in book.get_author().lower():
-                print(f"Book found: {book.get_title()} by {book.get_author()}, Available: {book.is_available()}")
-                return book
-        print("Book not found")
-        return None
+    def lend_book(self, isbn, member_id):
+        try:
+            book = next(b for b in self.books if b.get_isbn() == isbn)
+            member = self.find_member(member_id)
 
-    def lend_book(self, member, book):
-        if book in self.books:
+            if not book.is_available():
+                raise Exception("Book unavailable")
+
             member.borrow_book(book)
-        else:
-            print("Book not found in library")
 
-    def accept_return(self, member, book):
-        if book in self.books:
+        except Exception as e:
+            print("Error:", e)
+
+    def return_book(self, isbn, member_id):
+        try:
+            book = next(b for b in self.books if b.get_isbn() == isbn)
+            member = self.find_member(member_id)
+
             member.return_book(book)
-        else:
-            print("Book not found in library")
+
+        except Exception as e:
+            print("Error:", e)
 
 
-# --- Main program ---
-library = Library()
+# ---------------- Main Program ----------------
+def main():
+    library = Library()
 
-# Add sample members
-library.add_member(Member("Loki", "M01"))
-library.add_member(Member("Alice", "M02"))
+    # Create sample books
+    book1 = Book("Python Basics", "Guido", "101")
+    book2 = Book("AI Made Easy", "Andrew", "102")
+    book3 = Book("DSA Mastery", "Rahul", "103")
 
-while True:
-    print("\n--- Library Menu ---")
-    print("1. Add Book")
-    print("2. Remove Book")
-    print("3. Lend Book")
-    print("4. Return Book")
-    print("5. Search Book")
-    print("6. Show All Books")
-    print("7. Exit")
+    # Add books to library
+    library.add_book(book1)
+    library.add_book(book2)
+    library.add_book(book3)
 
-    choice = input("Enter your choice: ")
+    # Create members
+    member1 = Member("Loki", "M01")
+    member2 = Member("Alice", "M02")
 
-    if choice == "1":
-        title = input("Enter book title: ")
-        author = input("Enter author name: ")
-        ISBN = input("Enter ISBN: ")
-        book = Book(title, author, ISBN)
-        library.add_book(book)
+    # Add members
+    library.add_member(member1)
+    library.add_member(member2)
 
-    elif choice == "2":
-        keyword = input("Enter book title or author to remove: ")
-        book = library.search_book(keyword)
-        if book:
-            library.remove_book(book)
+    print("\n--- Lending Book ---")
+    library.lend_book("101", "M01")
 
-    elif choice == "3":
-        keyword = input("Enter book title or author to lend: ")
-        book = library.search_book(keyword)
-        if book:
-            member_id = input("Enter member ID: ")
-            member = library.find_member(member_id)
-            if member:
-                library.lend_book(member, book)
+    print("\n--- Trying to lend same book again ---")
+    library.lend_book("101", "M02")
 
-    elif choice == "4":
-        keyword = input("Enter book title or author to return: ")
-        book = library.search_book(keyword)
-        if book:
-            member_id = input("Enter member ID: ")
-            member = library.find_member(member_id)
-            if member:
-                library.accept_return(member, book)
+    print("\n--- Returning Book ---")
+    library.return_book("101", "M01")
 
-    elif choice == "5":
-        keyword = input("Enter book title or author to search: ")
-        library.search_book(keyword)
+    print("\n--- Searching Book ---")
+    try:
+        book = library.search_book("Python")
+        print("Found book:", book.get_title())
+        print("Available:", book.is_available())
+    except Exception as e:
+        print("Error:", e)
 
-    elif choice == "6":
-        print("\nAll books in library:")
-        for book in library.books:
-            book.display_info()
 
-    elif choice == "7":
-        print("Exiting...")
-        break
-
-    else:
-        print("Invalid choice. Try again.")
+# Run program
+if __name__ == "__main__":
+    main()
