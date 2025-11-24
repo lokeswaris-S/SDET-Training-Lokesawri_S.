@@ -1,7 +1,9 @@
+package com.moolya.exceptions;
+
 
 import java.util.HashMap;
 
-public class LibraryApp {
+public class App {
     static class InvalidInputException extends Exception {
         public InvalidInputException(String message) {
             super(message);
@@ -27,13 +29,16 @@ public class LibraryApp {
 
         try {
             //  Invalid Input Example
-            borrowBook(-10);
+            borrowBook(10);//(Exception wont get )
+         //   borrowBook(-10);//(we will get the exception here)
 
             //  Resource Not Found Example
-            findBook(999);
+            findBook(102);//(we wont get the exception)
+            //findBook(106);//(we will get the exception)
 
             //  Database Error Example
-            connectToDatabase(true);
+            connectToDatabase(true);//(we wont get the exception)
+            //  connectToDatabase(false);//(we will get the exception)
 
         }
         catch (InvalidInputException e) {
@@ -67,10 +72,9 @@ public class LibraryApp {
     }
 
     public static void connectToDatabase(boolean simulateError) throws DatabaseConnectionException {
-        if (simulateError) {
+        if (!simulateError) {
             throw new DatabaseConnectionException(
-                    "Unable to connect to database.",
-                    new RuntimeException("Connection timeout")
+                    "Unable to connect to database."
             );
         }
 
