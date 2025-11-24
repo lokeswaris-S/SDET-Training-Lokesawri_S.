@@ -2,16 +2,9 @@
 import java.util.HashMap;
 
 public class LibraryApp {
-
-    // ----------- Custom Exceptions -----------
-
     static class InvalidInputException extends Exception {
         public InvalidInputException(String message) {
             super(message);
-        }
-
-        public InvalidInputException(String message, Throwable cause) {
-            super(message, cause);
         }
     }
 
@@ -19,29 +12,16 @@ public class LibraryApp {
         public ResourceNotFoundException(String message) {
             super(message);
         }
-
-        public ResourceNotFoundException(String message, Throwable cause) {
-            super(message, cause);
-        }
     }
 
     static class DatabaseConnectionException extends Exception {
         public DatabaseConnectionException(String message) {
             super(message);
         }
-
-        public DatabaseConnectionException(String message, Throwable cause) {
-            super(message, cause);
-        }
     }
-
-    // ----------- Simple Library Database -----------
-
     private static HashMap<Integer, String> books = new HashMap<>();
 
     public static void main(String[] args) {
-
-        // Adding some sample books
         books.put(101, "Java Programming");
         books.put(102, "Data Structures");
 
@@ -66,13 +46,10 @@ public class LibraryApp {
             System.out.println("DatabaseConnectionException Caught: " + e.getMessage());
         }
         finally {
-            System.out.println("\nProgram execution completed.");
+            System.out.println("Program execution completed.");
         }
     }
 
-    // ----------- Methods Demonstrating Exceptions -----------
-
-    // Invalid input example
     public static void borrowBook(int bookId) throws InvalidInputException {
         if (bookId <= 0) {
             throw new InvalidInputException("Book ID cannot be zero or negative.");
@@ -80,8 +57,7 @@ public class LibraryApp {
 
         System.out.println("Borrowing book with ID: " + bookId);
     }
-
-    // Resource not found example
+    
     public static void findBook(int bookId) throws ResourceNotFoundException {
         if (!books.containsKey(bookId)) {
             throw new ResourceNotFoundException("Book with ID " + bookId + " not found.");
@@ -90,7 +66,6 @@ public class LibraryApp {
         System.out.println("Book Found: " + books.get(bookId));
     }
 
-    // Database connection example
     public static void connectToDatabase(boolean simulateError) throws DatabaseConnectionException {
         if (simulateError) {
             throw new DatabaseConnectionException(
