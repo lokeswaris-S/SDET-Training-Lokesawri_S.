@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class Transaction {
+
     private String transactionId;
     private int bookId;
     private String memberId;
@@ -27,6 +28,7 @@ public class Transaction {
 
     public double calculateFine() {
         long days = ChronoUnit.DAYS.between(issueDate, returnDate);
+
         if (days > 14) {
             fineAmount = (days - 14) * FINE_PER_DAY;
         } else {
