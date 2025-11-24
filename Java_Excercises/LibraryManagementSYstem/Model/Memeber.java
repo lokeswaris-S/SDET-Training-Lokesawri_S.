@@ -1,9 +1,11 @@
+
 package model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Member {
+
     private String memberId;
     private String name;
     private List<Book> issuedBooks;
@@ -14,14 +16,16 @@ public class Member {
         this.issuedBooks = new ArrayList<>();
     }
 
-    public String getMemberId() { 
-      return memberId; 
+    public String getMemberId() {
+        return memberId;
     }
+
     public String getName() {
-      return name;
+        return name;
     }
-    public List<Book> getIssuedBooks() { 
-      return issuedBooks;
+
+    public List<Book> getIssuedBooks() {
+        return issuedBooks;
     }
 
     public void issueBook(Book book) {
