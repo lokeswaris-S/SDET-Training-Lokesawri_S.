@@ -1,13 +1,14 @@
-package service;
+package Service;
 
 import model.Book;
 import model.Member;
-import exception.ResourceNotFoundException;
+import Exception.ResourceNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Librarian {
+
     private String name;
     private String employeeId;
 
@@ -27,7 +28,8 @@ public class Librarian {
 
     public void removeBook(int bookId) throws ResourceNotFoundException {
         boolean removed = books.removeIf(b -> b.getBookId() == bookId);
-        if (!removed) throw new ResourceNotFoundException("Book not found.");
+        if (!removed)
+            throw new ResourceNotFoundException("Book not found.");
     }
 
     public void registerMember(Member member) {
@@ -49,9 +51,10 @@ public class Librarian {
     }
 
     public List<Book> getAllBooks() {
-      return books;
+        return books;
     }
+
     public List<Member> getAllMembers() {
-      return members;
+        return members;
     }
 }
